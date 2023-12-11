@@ -1,0 +1,133 @@
+<style>
+    /* Existing styles remain the same */
+  
+    body {
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+  
+    .center {
+      text-align: center;
+      margin-bottom: 0; /* Updated margin-bottom to remove space */
+      color: black;
+      background-color: white;
+      width: 500px;
+      margin: 0 auto;
+
+    }
+  
+    .myForm {
+      background-color: white;
+      color: black;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+      width: 500px;
+      margin: 0 auto;
+      
+    }
+  
+    .form-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+  
+    .form-group label {
+      width: 120px;
+      text-align: right;
+      padding-right: 10px;
+      margin-top: 6px;
+    }
+  
+    .form-group input {
+      width: 200px;
+    }
+  
+    .submit-btn {
+      display: block;
+      margin: 0 auto;
+      background-color: aquamarine;
+      width: 400px;
+    }
+  </style>
+  
+  <body>
+  <div class="center">
+    <img src ="C:\Users\mzain\OneDrive\Pictures\images.png">
+    <h3>Student Registration Form</h3>
+  </div>
+  
+  <form class = "myForm" id="myForm" action="/action_page.php">
+    <div class="form-group">
+     
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" placeholder="Enter first name" name="firstName">
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" placeholder="Enter last name" name="lastName">
+    </div>
+    <div class="form-group">
+      <label for="studentEmail">Student Email:</label>
+      <input type="email" id="studentEmail" placeholder="Enter student email" name="studentEmail">
+    </div>
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="text" id="phoneNumber" placeholder="Enter phone number" name="phoneNumber">
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter password" name="password">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password:</label>
+      <input type="password" id="confirmPassword" placeholder="Confirm password" name="confirmPassword">
+    </div>
+    <button type="submit" class="btn btn-primary submit-btn">Register</button>
+  </form>
+</body>
+  
+  <script>
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevents the form from submitting by default
+      
+      let firstName = document.getElementById('firstName').value;
+      let lastName = document.getElementById('lastName').value;
+      let password = document.getElementById('password').value;
+      let confirmPassword = document.getElementById('confirmPassword').value;
+      let studentEmail = document.getElementById('studentEmail').value;
+      let phoneNumber = document.getElementById('phoneNumber').value;
+  
+      // Check if any field is empty
+      if (firstName.trim() === '' || lastName.trim() === '' || password.trim() === '' || confirmPassword.trim() === '' || studentEmail.trim() === '' || phoneNumber.trim() === '') {
+        alert('All fields are required!');
+        return;
+      }
+  
+      // Check email format using a simple regular expression
+      let emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailFormat.test(studentEmail)) {
+        alert('Please enter a valid student email address!');
+        return;
+      }
+  
+      // Check if password and confirm password match
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      if (phoneNumber.length !== 10 || isNaN(phoneNumber)) {
+      alert('Phone number must be a 10-digit number!');
+      return;
+    }
+  
+      // If all checks pass, you can submit the form
+      this.submit();
+    });
+  </script>
+  
+  
