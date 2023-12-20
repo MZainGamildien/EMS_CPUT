@@ -23,7 +23,8 @@ if ($conn->connect_error) {
     $execval = $stmt->execute();
 
     if ($execval) {
-        echo "Registration successful...";
+        header("Location: signup.html");
+        exit();
     } else {
         echo "Error: " . $stmt->error;
     }
