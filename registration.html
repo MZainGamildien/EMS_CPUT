@@ -57,11 +57,11 @@
   
   <body>
   <div class="center">
-    <img src ="C:\Users\mzain\OneDrive\Pictures\images.png">
-    <h3>Student Registration Form</h3>
+   
+  <h3>Student Registration Form</h3>
   </div>
   
-  <form class = "myForm" id="myForm" action="/action_page.php">
+  <form class = "myForm" id="myForm" action="process_form.php" method="post">
     <div class="form-group">
      
       <label for="firstName">First Name:</label>
@@ -91,43 +91,6 @@
   </form>
 </body>
   
-  <script>
-    document.getElementById('myForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevents the form from submitting by default
-      
-      let firstName = document.getElementById('firstName').value;
-      let lastName = document.getElementById('lastName').value;
-      let password = document.getElementById('password').value;
-      let confirmPassword = document.getElementById('confirmPassword').value;
-      let studentEmail = document.getElementById('studentEmail').value;
-      let phoneNumber = document.getElementById('phoneNumber').value;
-  
-      // Check if any field is empty
-      if (firstName.trim() === '' || lastName.trim() === '' || password.trim() === '' || confirmPassword.trim() === '' || studentEmail.trim() === '' || phoneNumber.trim() === '') {
-        alert('All fields are required!');
-        return;
-      }
-  
-      // Check email format using a simple regular expression
-      let emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailFormat.test(studentEmail)) {
-        alert('Please enter a valid student email address!');
-        return;
-      }
-  
-      // Check if password and confirm password match
-      if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-      if (phoneNumber.length !== 10 || isNaN(phoneNumber)) {
-      alert('Phone number must be a 10-digit number!');
-      return;
-    }
-  
-      // If all checks pass, you can submit the form
-      this.submit();
-    });
-  </script>
+ 
   
   
