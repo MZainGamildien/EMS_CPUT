@@ -28,7 +28,84 @@
     <meta property="og:title" content="Transport">
     <meta property="og:type" content="website">
   <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
-  <body class="u-body u-white u-xl-mode" data-lang="en"><header class="u-clearfix u-header u-header" id="sec-316f"><div class="u-clearfix u-sheet u-sheet-1">
+  <body class="u-body u-white u-xl-mode" data-lang="en">
+    
+    <?php
+    // Database connection details
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "ems_db";
+
+    // Create connection
+    $conn = new mysqli('localhost', 'root', '', 'ems_db');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Function to retrieve data from the database
+    function fetchDataFromDatabase($conn)
+    {
+        $sql = "SELECT * FROM transport";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } else {
+            return array();
+        }
+    }
+
+    // Function to insert data into a different table
+function insertDataIntoNewTable($conn, $data)
+{
+    $sql = "INSERT INTO approved (title, description, description2, description3) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    // Assuming you have columns in your_new_table that match the data you want to insert
+    $stmt->bind_param("ssss", $data['title'], $data['description'], $data['description2'], $data['description3']);
+
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Main logic
+$dataFromDatabase = fetchDataFromDatabase($conn);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acceptButton"])) {
+    $recordId = $_POST["recordId"];
+
+    // Retrieve the selected record from the original table
+    $sql = "SELECT * FROM transport WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $recordId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $selectedRecord = $result->fetch_assoc();
+
+        // Insert the selected record into the new table
+        if (insertDataIntoNewTable($conn, $selectedRecord)) {
+            echo "Record accepted and inserted into the new table.";
+        } else {
+            echo "Error accepting the record.";
+        }
+    } else {
+        echo "Record not found.";
+    }
+
+    $stmt->close();
+}
+
+    ?>
+    
+    <header class="u-clearfix u-header u-header" id="sec-316f"><div class="u-clearfix u-sheet u-sheet-1">
         <a href="Home.html" class="u-image u-logo u-image-1" data-image-width="900" data-image-height="900">
           <img src="images/unnamed.jpg" class="u-logo-image u-logo-image-1">
         </a>
@@ -43,7 +120,7 @@
           <div class="u-custom-menu u-nav-container">
             <ul class="u-nav u-spacing-20 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-no-bottom u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-grey-90 u-text-hover-palette-2-base" href="Home.html" style="padding: 10px;">Home</a>
 </li><li class="u-nav-item"><a class="u-border-no-bottom u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-grey-90 u-text-hover-palette-2-base" href="Schedule.html" style="padding: 10px;">Schedule</a>
-</li><li class="u-nav-item"><a class="u-border-no-bottom u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-grey-90 u-text-hover-palette-2-base" href="Transport-.html" style="padding: 10px;">Transport </a>
+</li><li class="u-nav-item"><a class="u-border-no-bottom u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-palette-1-base u-text-grey-90 u-text-hover-palette-2-base" href="Transport-.php" style="padding: 10px;">Transport </a>
 </li></ul>
           </div>
           <div class="u-custom-menu u-nav-container-collapse">
@@ -52,7 +129,7 @@
                 <div class="u-menu-close"></div>
                 <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Home.html">Home</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Schedule.html">Schedule</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Transport-.html">Transport </a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Transport-.php">Transport </a>
 </li></ul>
               </div>
             </div>
@@ -62,84 +139,43 @@
       </div></header>
     <section class="u-clearfix u-section-1" id="sec-f291">
       <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-        <a href="Transport-.html" class="u-align-center u-border-none u-btn u-button-style u-grey-15 u-text-palette-1-base u-btn-1">Available</a>
-        <a href="Approved.html" class="u-align-center u-border-none u-btn u-button-style u-hover-grey-25 u-text-palette-1-base u-white u-btn-2">Approved</a>
+        <a href="Transport-.php" class="u-align-center u-border-none u-btn u-button-style u-grey-15 u-text-palette-1-base u-btn-1">Available</a>
+        <a href="Approved.php" class="u-align-center u-border-none u-btn u-button-style u-hover-grey-25 u-text-palette-1-base u-white u-btn-2">Approved</a>
       </div>
     </section>
+
+    <?php foreach ($dataFromDatabase as $record) : ?>
+
     <section class="u-align-center u-clearfix u-white u-section-2" id="sec-830e">
       <div class="u-clearfix u-sheet u-sheet-1">
         <div class="u-container-style u-custom-color-1 u-expanded-width u-group u-shape-rectangle u-group-1">
           <div class="u-container-layout u-container-layout-1">
-            <h4 class="u-text u-text-body-color u-text-1">100 Transport to Groote Schuur</h4>
+            <h4 class="u-text u-text-body-color u-text-1"><?php echo $record['title']; ?></h4>
           </div>
         </div>
         <div class="u-container-style u-expanded-width u-grey-15 u-group u-shape-rectangle u-group-2">
           <div class="u-container-layout u-container-layout-2">
-            <a href="#" class="u-border-none u-btn u-btn-rectangle u-button-style u-color-scheme-summer-time u-hover-custom-color-1 u-palette-1-base u-radius-0 u-text-grey-90 u-btn-1">Accept</a>
-            <p class="u-text u-text-2">Transport for trips to and from Groote Schuur Hospital.<br>Available for both day and night shifts.<br>Dates available: 01 January 2024 - 31 January 2024<br>
-              <br>
+            
+
+          
+          <button class="u-border-none u-btn u-btn-rectangle u-button-style u-color-scheme-summer-time u-hover-custom-color-1 u-palette-1-base u-radius-0 u-text-grey-90 u-btn-1 accept-button"
+                            data-record-id="<?php echo $record['id']; ?>">Accept</button>
+           <p class="u-text u-text-2"><?php echo $record['description']; ?><br><?php echo $record['description2']; ?><br><?php echo $record['description3']; ?>
             </p>
           </div>
         </div>
       </div>
     </section>
-    <section class="u-align-center u-clearfix u-white u-section-3" id="sec-dea5">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-container-style u-custom-color-1 u-expanded-width u-group u-shape-rectangle u-group-1">
-          <div class="u-container-layout u-valign-top u-container-layout-1">
-            <h4 class="u-text u-text-body-color u-text-1">60 Transport to Tygerburg Hospital</h4>
-          </div>
-        </div>
-        <div class="u-container-style u-expanded-width u-grey-15 u-group u-shape-rectangle u-group-2">
-          <div class="u-container-layout u-container-layout-2">
-            <p class="u-text u-text-2">Transport for trips to and from Tygerburg Hosital.<br>Available for both day and night shifts.<br>Dates available: 15 January 2024 - 30 March 2024
-            </p>
-            <a href="#" class="u-border-none u-btn u-btn-rectangle u-button-style u-color-scheme-summer-time u-hover-custom-color-1 u-palette-1-base u-radius-0 u-text-black u-btn-1">Accept</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="u-clearfix u-white u-section-4" id="sec-b8d1">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-container-style u-custom-color-1 u-expanded-width u-group u-shape-rectangle u-group-1">
-          <div class="u-container-layout u-valign-top u-container-layout-1">
-            <h4 class="u-text u-text-body-color u-text-1">100 Transport to Red Cross Hospital</h4>
-          </div>
-        </div>
-        <div class="u-container-style u-expanded-width u-grey-15 u-group u-shape-rectangle u-group-2">
-          <div class="u-container-layout u-container-layout-2">
-            <p class="u-text u-text-2">Transport for trips to and from Red Cross Hospital<br>Available for Day shift <span style="font-weight: 700;">only <span style="font-weight: 400;">(7:00 - 19:00)</span>
-              </span>
-              <br>Dates available: 15 January 2024 - 15 February 2024
-            </p>
-            <a href="#" class="u-border-none u-btn u-btn-rectangle u-button-style u-color-scheme-summer-time u-hover-custom-color-1 u-palette-1-base u-radius-0 u-text-black u-btn-1">Accept</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="u-clearfix u-white u-section-5" id="sec-ceca">
-      <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-container-style u-custom-color-1 u-expanded-width u-group u-shape-rectangle u-group-1">
-          <div class="u-container-layout u-container-layout-1">
-            <h4 class="u-text u-text-body-color u-text-1">120 Transport to Groote Schuur</h4>
-          </div>
-        </div>
-        <div class="u-container-style u-expanded-width u-grey-15 u-group u-shape-rectangle u-group-2">
-          <div class="u-container-layout u-container-layout-2">
-            <p class="u-text u-text-2">Transport for trips to and from Groote Schuur Hospital<br>Available for Night shift <span style="font-weight: 700;">only <span style="font-weight: 400;">(19:00 - 7:00)</span>
-              </span>
-              <br>Dates available: 20 February 2024 - 30 June 2024
-            </p>
-            <a href="#" class="u-border-none u-btn u-btn-rectangle u-button-style u-color-scheme-summer-time u-hover-custom-color-1 u-palette-1-base u-radius-0 u-text-black u-btn-1">Accept</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    
+    <?php endforeach; ?>
+   
     
     <footer class="u-align-center u-clearfix u-footer u-white u-footer" id="sec-ddd5"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <p class="u-small-text u-text u-text-variant u-text-1">Cape Peninsula University of Technology</p>
       </div></footer>
+
+      <?php
+    // Close the database connection
+    $conn->close();
+    ?>
   
 </body></html>
