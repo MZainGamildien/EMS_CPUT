@@ -10,7 +10,7 @@
   	<h2>Login</h2>
   </div>
 	 
-  <form method="post" action="process_form.php">
+  <form method="post" action="server.php">
   	<div class="input-group">
   		<label>Email</label>
   		<input type="text" id="Email" placeholder="Enter  Email" name="email" required>

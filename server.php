@@ -1,33 +1,44 @@
 <?php
-
-$email=$_POST['Email'];
-$password=$_POST['password'];
-
-
-if (empty($email) || empty($password)) {
-    echo "Please fill in all fields.";
-} elseif (!filter_var($studentEmail, FILTER_VALIDATE_EMAIL)) {
-    echo "Invalid email format.";
-}
-else{
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+ 
+    // Database connection
     $conn = new mysqli('localhost', 'root', '', 'ems_db');
-        if ($conn->connect_error) {
-            echo "$conn->connect_error";
-            die("Connection Failed : " . $conn->connect_error);
+    if ($conn->connect_error) {
+        echo "$conn->connect_error";
+        die("Connection Failed : " . $conn->connect_error);
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM registration WHERE studentEmail = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+ 
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $storedPassword = $row['password'];
+ 
+            // Verify password
+            if (password_verify($password, $storedPassword)) {
+                // Password is correct, perform login
+                // You can set session variables or perform other actions here
+                echo "Login successful!";
+                header("Location: Transport-.php");
+                 exit();
+            } //else {
+               // echo "Incorrect password!";
+                //echo "Entered Password: " . $password . "<br>";
+               // echo "Stored Password: " . $storedPassword . "<br>";
+           // }
         } else {
-            // Database connection
-            $stmt = $conn->prepare("insert into login(Email, password) values(?, ?)");
-            $stmt->bind_param("sssssi",  $Email,$password);
-            $execval = $stmt->execute();
-            echo $execval;
-            echo "Login successfully...";
-            $stmt->close();
-            $conn->close();
-    
+            echo "Email not found!";
         }
-
-
+ 
+        $stmt->close();
+        $conn->close();
     }
-
-
+}
 ?>

@@ -11,7 +11,29 @@
     <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 5.16.3, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
-    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".accept-button").on("click", function () {
+                // Get the record ID from the data attribute
+                var recordId = $(this).data("record-id");
+
+                // AJAX request to handle the "Accept" functionality
+                $.ajax({
+                    url: "Transport-.php", // Replace with your actual PHP script file
+                    method: "POST",
+                    data: { acceptButton: true, recordId: recordId },
+                    success: function (response) {
+                        alert(response); // You can replace this with a more user-friendly notification
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
     
     
     
