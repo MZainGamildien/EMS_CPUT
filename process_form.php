@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($execval) {
                 //alert ("Data uploaded successfully!");
                 // You can redirect the user to another page using header if needed
-                 header("Location: signup.html");
+                 header("Location: login.html");
                  exit();
             } else {
                 echo "Error: " . $stmt->error;
